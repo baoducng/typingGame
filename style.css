@@ -1,0 +1,17 @@
+.myGreen {
+	color: green;
+}
+.myRed {
+	color: red;
+}
+.myBlack {
+	color: black;
+}
+
+.myRedBG{
+	background-color: red;
+}
+
+.displayBlock {
+	display: block;
+}
