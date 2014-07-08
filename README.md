@@ -6,3 +6,5 @@ To Dos
 3. remaking the function to calculate WPM
 4. update the words the other person is typing
 5. problem: timer only counting to 60?
+	//I can do a setInterval incrementing down the Count down
+	//when it is zero then the time start
