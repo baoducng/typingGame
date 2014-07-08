@@ -28,13 +28,6 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 	$scope.inputCode = false;
 	$scope.ready = false;
 
-
-	// if ($scope.userName === undefined){
-	// 	$scope.userName = prompt('Please enter your name!');
-	// }
-
-
-//Put text in an array because ngrepeat messes up string order.
 	for (var i = 0; i < $scope.text.length; i++){
 		var obj = { 
 			letter : $scope.text[i],
@@ -43,12 +36,34 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 		$scope.textStorage.push(obj);
 	};
 
-	$scope.checkColor = function(){
+
+	function shuffle(array) {
+  var m = array.length, t, i;
+
+  // While there remain elements to shuffle…
+  while (m) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * m--);
+
+    // And swap it with the current element.
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+
+  return array;
+	}
+
+	$scope.checkColor = function(data){
+		$scope.inputText = data;
 		var last = $scope.inputText.length - 1;	
 		var currLength = $scope.inputText.length;
 		//reset the color to black when user backspace
 		if (lastLength > currLength){
-			$scope.textStorage[lastLength - 1].color = 'black';
+			for (var i = currLength; i <= lastLength; i++){
+				$scope.textStorage[i].color = 'black';				
+			}
 			//getting an err when last length is 0
 		}
 		//set the color to red or green

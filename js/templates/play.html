@@ -1,5 +1,7 @@
-<div class="container-fluid col-md-6 text-center">		
+<div class="container-fluid col-lg-12 text-center">
 	<h1><timer autostart="false">Elapsed: {{seconds}}</timer></h1>
+</div>
+<div class="container-fluid col-md-6 text-center">		
 	<h1>{{userName}}</h1>
 	<div>
 		<div>
@@ -7,9 +9,9 @@
 		</div>
 
 		<div class="input-group text-center displayBlock">
-			<input class="form-control input-lg" type="text" placeholder="Click here to start" ng-model="inputText" ng-change="checkColor(); checkCompletion()" ng-click="startTimer()" >
 			<h1>Your current WPM: {{WPM}}</h1>
 			<progressbar max="100" value="completionRate"></progressbar>
+			<input class="form-control input-lg" type="text" placeholder="Click here to start" ng-model="inputText" ng-change="checkColor(inputText); checkCompletion(inputText)" ng-click="startTimer()" >
 		</div>
 	</div>
 </div>
