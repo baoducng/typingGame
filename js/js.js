@@ -10,7 +10,7 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 	$scope.timerRunning = false;
 	$scope.gameStarted = false;
 	$scope.userName = undefined;
-
+	$scope.ready = false;
 	
 	//Put text in an array because ngrepeat messes up string order.
 	for (var i = 0; i < $scope.text.length; i++){
@@ -103,13 +103,14 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 		if ($scope.storage.length % 2 === 0){
 			$scope.fire.$child($scope.userId).$update({against: $scope.storage[$scope.storage.length - 2]})
 			$scope.fire.$child($scope.storage[$scope.storage.length - 2]).$update({against: $scope.userId})
-			$scope.waiting = false;
+			$scope.ready = true;
 			$scope.enemy = $scope.fire.$child($scope.storage[$scope.storage.length - 2]);
 		}	else {
 			$scope.fire.$child($scope.userId).$on('value', function(snapShot){
 				if ($scope.fire.$child($scope.userId) !== undefined){
 					enemyId = $scope.fire.$child($scope.userId).against;
 					$scope.enemy = $scope.fire.$child(enemyId);
+					$scope.ready = true;
 				}
 			})
 		}
