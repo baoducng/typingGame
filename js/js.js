@@ -3,6 +3,7 @@ var app = angular.module("myApp", ['timer', 'ui.bootstrap', 'firebase']);
 app.controller('TextController', function($scope, $rootScope, $interval, $firebase){
 	var lastLength;
 	var enemyId;
+	var userId
 	$scope.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
 	$scope.textStorage = [];
 	$scope.storage = [];
@@ -13,7 +14,7 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 	$scope.ready = false;
 
 	
-	//Put text in an array because ngrepeat messes up string order.
+//Put text in an array because ngrepeat messes up string order.
 	for (var i = 0; i < $scope.text.length; i++){
 		var obj = { 
 			letter : $scope.text[i],
@@ -92,8 +93,17 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 		text: $scope.textStorage, 
 		against: null})
 			.then(function(ref){
-				$scope.userId = ref.name();
-			});
+				userId = ref.name();	
+				$interval(function(){
+					$scope.calWPM();
+					$scope.fire.$child(userId).$update({
+						wpm: $scope.WPM, 
+						completion: $scope.completionRate,
+						text: $scope.textStorage
+					});
+				}, 1000);
+					
+		});
 
 	//find opponents
 	$scope.fire.$on('loaded', function(childSnapshot){		
@@ -103,30 +113,21 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 			}
 		}
 		if ($scope.storage.length % 2 === 0){
-			$scope.fire.$child($scope.userId).$update({against: $scope.storage[$scope.storage.length - 2]})
-			$scope.fire.$child($scope.storage[$scope.storage.length - 2]).$update({against: $scope.userId})
+			enemyId = $scope.storage[$scope.storage.length - 2];
+			$scope.fire.$child(userId).$update({against: enemyId})
+			$scope.fire.$child(enemyId).$update({against: userId})
+			$scope.enemy = $scope.fire.$child(enemyId);
 			$scope.ready = true;
-			$scope.enemy = $scope.fire.$child($scope.storage[$scope.storage.length - 2]);
-		}	else {
-			if ($scope.userId){
-				$scope.fire.$child($scope.userId).$on('value', function(snapShot){
-					if ($scope.fire.$child($scope.userId) !== undefined){
-						enemyId = $scope.fire.$child($scope.userId).against;
-						$scope.enemy = $scope.fire.$child(enemyId);
-						$scope.ready = true;
-					}
-				})
-			}
-		}
-	});
-
-// *****************UPDATE  user info and cal WPM every 1.5 secs*****************//	 
-	$interval(function(){
-		$scope.calWPM();
-		$scope.fire.$child($scope.userId).$update({
-			wpm: $scope.WPM, 
-			completion: $scope.completionRate,
-			text: $scope.textStorage
-		});
-	}, 2000);	
-})
+		}	else {						
+			$scope.fire.$child(userId).$on('value', function(snapShot){
+				if ($scope.fire.$child(userId).against !== undefined){
+					enemyId = $scope.fire.$child(userId).against;
+					$scope.enemy = $scope.fire.$child(enemyId);
+					$scope.ready = true;
+					
+				}
+			});
+		}		
+	});	
+});
+	
