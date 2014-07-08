@@ -30,9 +30,14 @@
 	
 	<!-- *********************************************************  -->
 	<div class="container-fluid col-md-6 text-center">
+		<form ng-submit="addOpponents(enemyCode)" ng-hide="ready">
+			<input class="form-control input-lg" type="text"  ng-model="enemyCode" placeholder="Paste the code of your opponent here"> 
+		</form>
+		<h1 ng-hide="ready">Your code is {{userId}}</h1>
+
 		<h1><timer autostart="false">Elapsed: {{seconds}}</timer></h1>
 		<h1>{{userName}}</h1>
-		<div>
+		<div ng-show="ready">
 			<div>
 				<h2><span ng-repeat='letter in textStorage' ng-class="{myRed: letter.color === 'red', myBlack: letter.color === 'black', myGreen: letter.color === 'green'}">{{letter.letter}}</span></h2>
 			</div>
