@@ -10,6 +10,7 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 	$scope.timerRunning = false;
 	$scope.gameStarted = false;
 	$scope.userName = undefined;
+
 	
 	//Put text in an array because ngrepeat messes up string order.
 	for (var i = 0; i < $scope.text.length; i++){
@@ -73,7 +74,7 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
   	$scope.seconds = $rootScope.seconds;
   };
 
-  // ************************FIREBASE SETUP****************//	 
+// ************************FIREBASE SETUP****************//	 
 	$scope.fire = $firebase(new Firebase("https://typinggame.firebaseio.com"));
 
 	//replace this with an input box later	
@@ -114,8 +115,7 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 		}
 	});
 
-  // ************************************************************************************//	 
-	// UPDATE  user info and cal WPM every 1.5 secs
+// *****************UPDATE  user info and cal WPM every 1.5 secs*****************//	 
 	$interval(function(){
 		$scope.calWPM();
 		$scope.fire.$child($scope.userId).$update({
