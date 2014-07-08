@@ -1,0 +1,22 @@
+{
+  "name": "typingGame",
+  "version": "0.0.0",
+  "homepage": "https://github.com/baoducng/typingGame",
+  "authors": [
+    "baoducng <baoducng@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-bootstrap": "~0.11.0",
+    "angular-timer": "~1.1.6",
+    "angular": "~1.2.19",
+    "bootstrap": "~3.2.0"
+  }
+}
