@@ -11,6 +11,7 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 	$scope.gameStarted = false;
 	$scope.userName = undefined;
 	$scope.ready = false;
+
 	
 	//Put text in an array because ngrepeat messes up string order.
 	for (var i = 0; i < $scope.text.length; i++){
@@ -87,7 +88,8 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 		name: $scope.userName, 
 		wpm: $scope.WPM, 
 		completion: $scope.completionRate, 
-		waiting: true, 
+		waiting: true,
+		text: $scope.textStorage, 
 		against: null})
 			.then(function(ref){
 				$scope.userId = ref.name();
@@ -106,13 +108,15 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 			$scope.ready = true;
 			$scope.enemy = $scope.fire.$child($scope.storage[$scope.storage.length - 2]);
 		}	else {
-			$scope.fire.$child($scope.userId).$on('value', function(snapShot){
-				if ($scope.fire.$child($scope.userId) !== undefined){
-					enemyId = $scope.fire.$child($scope.userId).against;
-					$scope.enemy = $scope.fire.$child(enemyId);
-					$scope.ready = true;
-				}
-			})
+			if ($scope.userId){
+				$scope.fire.$child($scope.userId).$on('value', function(snapShot){
+					if ($scope.fire.$child($scope.userId) !== undefined){
+						enemyId = $scope.fire.$child($scope.userId).against;
+						$scope.enemy = $scope.fire.$child(enemyId);
+						$scope.ready = true;
+					}
+				})
+			}
 		}
 	});
 
@@ -121,6 +125,8 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 		$scope.calWPM();
 		$scope.fire.$child($scope.userId).$update({
 			wpm: $scope.WPM, 
-			completion: $scope.completionRate});
-	}, 1500);	
+			completion: $scope.completionRate,
+			text: $scope.textStorage
+		});
+	}, 2000);	
 })
