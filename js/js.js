@@ -12,6 +12,7 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 		};
 		$scope.textStorage.push(obj);
 	};
+	var enemyId;
 	$scope.checkColor = function(){
 		var last = $scope.inputText.length - 1;	
 		var currLength = $scope.inputText.length;
@@ -32,9 +33,11 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 
 	};
 	$scope.checkCompletion = function(){
-		$scope.completionRate = (($scope.inputText.length / $scope.textStorage.length * 100).toFixed(2));
-		$scope.fire.$child($scope.userId).$update({wpm: $scope.WPM, completion: $scope.completionRate});
+		$scope.completionRate = (($scope.inputText.length / $scope.textStorage.length * 100).toFixed(2));	
 	};
+	$interval(function(){
+		$scope.fire.$child($scope.userId).$update({wpm: $scope.WPM, completion: $scope.completionRate});
+	}, 1000);
 	//have a timer counting down before the things starts
 	$scope.WPM = 0;
 	$scope.calWPM = function(){
@@ -47,7 +50,7 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 	$interval(function(){ $scope.calWPM() }, 1500);
   	// ************************************************************************************//	 
 	//initiating fire base and setting up the first player
-	$scope.fire = $firebase(new Firebase("https://typinggame.firebaseio.com/users"));
+	$scope.fire = $firebase(new Firebase("https://typinggame.firebaseio.com"));
 	$scope.userName = undefined;
 	if ($scope.userName === undefined){
 		$scope.userName = prompt('Please enter your name!');
@@ -57,38 +60,31 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
 		$scope.userId = ref.name();
 	});
 
-	console.log( JSON.stringify( $scope.fire ) );
+	$scope.storage = [];
+	$scope.fire.$on('loaded', function(childSnapshot){		
+		for (var key in childSnapshot){
+			if (key[0] === '-'){
+				$scope.storage.push(key);
+			}
+		}
+		console.log($scope.storage.length);
+		if ($scope.storage.length % 2 === 0){
+			//this current one is the last one.
+			$scope.fire.$child($scope.userId).$update({against: $scope.storage[$scope.storage.length - 2]})
+			$scope.fire.$child($scope.storage[$scope.storage.length - 2]).$update({against: $scope.userId})
+			$scope.waiting = false;
+			$scope.enemy = $scope.fire.$child($scope.storage[$scope.storage.length - 2]);
+			//$scope.fire.$child($scope.storage[$scope.storage.length - 2]) 
 
-	//two scenario, listening to changes on itself, or listening to added on other people.
-	// for (var key in $scope.fire){
-	// 	console.log( JSON.stringi);
-	// }
-
-	setTimeout( function() {
-		var allKeys = Object.getOwnPropertyNames( $scope.fire );
-		var firebaseKeys = allKeys.filter( function( key ) {
-			return key.charAt( 0 ) === "-";
-		});
-		console.log(firebaseKeys);
-	}, 1000);
-	
-
-
-
-	// $scope.fire.$on('loaded', function(childSnapshot){
-	// 	// var user = childSnapshot.snapshot.value;
-	// 	// user.id = childSnapshot.snapshot.name;
-	// 	// $scope.users.push(user);
-	// 	console.log(childSnapshot)
-	// 	for (var key in childSnapshot){
-	// 		console.log(key)
-	// 	}
-		
-
-	// });	
-	
-
-
+		}	else {
+			$scope.fire.$child($scope.userId).$on('value', function(snapShot){
+				if ($scope.fire.$child($scope.userId) !== undefined){
+					enemyId = $scope.fire.$child($scope.userId).against;
+					$scope.enemy = $scope.fire.$child(enemyId);
+				}
+			})
+		}
+	});
 
 	//I can do a setInterval incrementing down the Count down
 	//when it is zero then the time start
@@ -125,6 +121,6 @@ app.controller('TextController', function($scope, $rootScope, $interval, $fireba
   };
 
   $scope.getTime = function(){
-  	$scope.seconds = $rootScope.seconds
+  	$scope.seconds = $rootScope.seconds;
   };
 })
