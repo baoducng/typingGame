@@ -6,12 +6,11 @@
 	<script src="bower_components/angular-timer/app/js/timer.js"></script>
 	<script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
 	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-  <script src="js/js.js"></script>
+		<script src="bower_components/angular-route/angular-route.js"></script>
+	
 	<!-- Firebase -->
 	<script src="https://cdn.firebase.com/js/client/1.0.17/firebase.js"></script>
 <script src="https://cdn.firebase.com/libs/angularfire/0.7.1/angularfire.js"></script>
-
-
 	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
 
 	<link rel="stylesheet" type="text/css" href="bower_components/normalize-css/normalize.css">
@@ -19,53 +18,8 @@
 
 	<title> A Typing Game</title>
 </head>
-
-<div class="container text-center" >
-	<h1>Typing Game</h1>
-</div>
-
-
-
-<body ng-controller="TextController">
-	
-	<!-- *********************************************************  -->
-	<div class="container-fluid col-md-6 text-center">
-		<form ng-submit="addOpponents(enemyCode)" ng-hide="ready">
-			<input class="form-control input-lg" type="text"  ng-model="enemyCode" placeholder="Paste the code of your opponent here"> 
-		</form>
-		<h1 ng-hide="ready">Your code is {{userId}}</h1>
-
-		<h1><timer autostart="false">Elapsed: {{seconds}}</timer></h1>
-		<h1>{{userName}}</h1>
-		<div ng-show="ready">
-			<div>
-				<h2><span ng-repeat='letter in textStorage' ng-class="{myRed: letter.color === 'red', myBlack: letter.color === 'black', myGreen: letter.color === 'green'}">{{letter.letter}}</span></h2>
-			</div>
-
-			<div class="input-group text-center displayBlock">
-				<input class="form-control input-lg" type="text" placeholder="Click here to start" ng-model="inputText" ng-change="checkColor(); checkCompletion()" ng-click="startTimer()" >
-				<h1>Your current WPM: {{WPM}}</h1>
-				<progressbar max="100" value="completionRate"></progressbar>
-			</div>
-		</div>
-	</div>
-	<!--******************************************************  -->
-	
-	<div class="container-fluid col-md-6 text-center" ng-show="ready">
-		<h1><timer autostart="false">Elapsed: {{seconds}}</timer></h1>
-		<h1>{{enemy.name}}</h1>
-		<div>
-			<div>
-				<h2><span ng-repeat='letter in enemy.text' ng-class="{myRed: letter.color === 'red', myBlack: letter.color === 'black', myGreen: letter.color === 'green'}">{{letter.letter}}</span></h2>
-			</div>
-
-			<div class="input-group text-center displayBlock">
-				<!-- <input class="form-control input-lg" type="text" placeholder="Click here to start" ng-model="inputText" ng-change="checkColor(); checkCompletion()" ng-click="startTimer()" > -->
-				<h1>Your current WPM: {{enemy.wpm}}</h1>
-				<progressbar max="100" value="enemy.completion"></progressbar>
-			</div>
-		</div>
-	</div>
-
+	<body ng-controller="TextController">
+		<div ng-view></div>
+  	<script src="js/js.js"></script>
 	</body>
 </html> 
